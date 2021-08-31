@@ -9,6 +9,9 @@ python = "^3.9"
 fastapi = "^0.68.1"
 SQLAlchemy = "^1.4.23"
 uvicorn = "^0.15.0"
+aiofiles = "^0.7.0"
+pydantic = "^1.8.2"
+psycopg2 = "^2.9.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
