@@ -4,8 +4,7 @@ from hashlib import sha256
 from typing import List
 
 from cool_urban_spaces_backend.models import User, UserCreate
-import cool_urban_spaces_backend.database
-
+import cool_urban_spaces_backend.database as database
 
 router = APIRouter(
     prefix='/api/user'
@@ -13,19 +12,19 @@ router = APIRouter(
 
 # Dependency
 def get_db():
-    db = cool_urban_spaces_backend.database.SessionLocal()
+    db = database.SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-@router.get('/{user_id}', response_model=User)
-def get_user(user_id: int, db: Session = Depends(get_db)):
-    return db.query(User).filter(User.id == user_id).first()
-
 @router.get('/all', response_model=List[User])
 def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(User).offset(skip).limit(limit).all()
+    return db.query(database.User).offset(skip).limit(limit).all()
+
+@router.get('/{user_id}', response_model=User)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    return db.query(database.User).filter(User.id == user_id).first()
 
 @router.post('/add', response_model=UserCreate)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
