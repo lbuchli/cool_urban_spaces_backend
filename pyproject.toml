@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "cool_urban_spaces_backend"
+version = "0.1.0"
+description = ""
+authors = ["Lukas Buchli <lukas.buchli@ost.ch>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.68.1"
+SQLAlchemy = "^1.4.23"
+uvicorn = "^0.15.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
