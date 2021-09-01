@@ -13,11 +13,19 @@ CREATE TABLE "user" (
 create table suggestion (
   id SERIAL PRIMARY KEY,
   title varchar(255),
-  description varchar(255),
+  description text,
   lat double precision,
   lon double precision,
+  "type" integer,
   author_id integer REFERENCES "user"
 );
 
-GRANT SELECT, INSERT, UPDATE, DELETE on "user", suggestion TO coolcity;
+create table comment (
+  id SERIAL PRIMARY KEY,
+  text text,
+  suggestion_id integer REFERENCES suggestion,
+  author_id integer REFERENCES "user"
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE on "user", suggestion, comment TO coolcity;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO coolcity;

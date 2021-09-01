@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -17,9 +17,9 @@ class User(UserBase):
 class SuggestionBase(BaseModel):
     title: str
     description: str
-    text: str
     lat: float
     lon: float
+    type: int
 
     class Config:
         orm_mode = True
@@ -29,4 +29,17 @@ class SuggestionCreate(SuggestionBase):
 
 class Suggestion(SuggestionBase):
     id: str
-    author_id: int
+    author_id: Union[int, None]
+
+class CommentBase(BaseModel):
+    text: str
+
+    class Config:
+        orm_mode = True
+
+class CommentCreate(CommentBase):
+    pass
+
+class Comment(CommentBase):
+    id: str
+    author_id: Union[int, None]
