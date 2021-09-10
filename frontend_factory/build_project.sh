@@ -1,0 +1,1 @@
+cd /home/developer/coolUrbanSpaces;git fetch --all;git reset --hard origin/master;flutter build web;

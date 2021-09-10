@@ -1,5 +1,6 @@
 FROM ubuntu:18.04
 
+
 # Prerequisites
 RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget
 
@@ -11,8 +12,9 @@ RUN useradd -ms /bin/bash developer
 
 RUN usermod -a -G devgroup developer
 
-USER developer
 WORKDIR /home/developer
+
+RUN git clone https://github.com/underwhelmingToaster/coolUrbanSpaces.git
 
 # Prepare Android directories and system variables
 RUN mkdir -p Android/sdk
@@ -33,11 +35,6 @@ ENV PATH "$PATH:/home/developer/flutter/bin"
 
 # Run basic check to download Dark SDK
 RUN flutter doctor
+COPY build_project.sh .
 
-RUN git clone https://github.com/underwhelmingToaster/coolUrbanSpaces.git
-WORKDIR /home/developer/coolUrbanSpaces
-RUN flutter build web
-
-CMD exec /bin/sh -c "trap : TERM INT; sleep 200 & wait"
-
-#CMD exec /bin/bash -c "trap : while true; sleep infinity & wait"
+CMD exec /bin/bash -c "/home/developer/build_project.sh"
