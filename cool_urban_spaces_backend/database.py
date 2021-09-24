@@ -3,9 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import os
 
-username = os.environ["POSTGRES_USER"]
-password = os.environ["POSTGRES_PASSWORD"]
-db_name = os.environ["POSTGRES_DB"]
+username = "postgres"
+password = ""
+db_name = "coolcity"
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{username}:{password}@db/{db_name}"
 
@@ -24,7 +24,7 @@ class User(Base):
     pwdhash = Column(String)
 
     suggestions = relationship('Suggestion', back_populates='author')
-    comments = relationship('Comment', back_populates='author')
+    messages = relationship('Message', back_populates='author')
 
 class Suggestion(Base):
     __tablename__ = "suggestion"
@@ -35,18 +35,20 @@ class Suggestion(Base):
     lat = Column(Float)
     lon = Column(Float)
     type = Column(Integer)
-    author_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
 
     author = relationship('User', back_populates='suggestions')
-    comments = relationship('Comment', back_populates='suggestion')
+    messages = relationship('Message', back_populates='suggestion')
 
-class Comment(Base):
-    __tablename__ = "comment"
+class Message(Base):
+    __tablename__ = "message"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True)
     text = Column(String)
-    suggestion_id = Column(Integer, ForeignKey('suggestion.id'))
-    author_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    createdat = Column(Integer)
+    author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    suggestion_id = Column(Integer, ForeignKey('suggestion.id'), nullable=False)
 
-    author = relationship('User', back_populates='comments')
-    suggestion = relationship('Suggestion', back_populates='comments')
+    author = relationship('User', back_populates='messages')
+    suggestion = relationship('Suggestion', back_populates='messages')
+

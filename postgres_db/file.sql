@@ -1,7 +1,9 @@
-CREATE DATABASE IF NOT EXISTS coolcity;
+CREATE DATABASE coolcity;
 
 \c coolcity
 
+CREATE USER dbuser WITH PASSWORD 'save_password';
+GRANT ALL PRIVILEGES ON DATABASE "coolcity" to dbuser;
 CREATE ROLE coolcity PASSWORD 'intentionally_public_for_local_demo';
 
 CREATE TABLE IF NOT EXISTS "user" (
@@ -20,12 +22,13 @@ create table IF NOT EXISTS suggestion (
   author_id integer REFERENCES "user"
 );
 
-create table IF NOT EXISTS comment (
-  id SERIAL PRIMARY KEY,
+create table IF NOT EXISTS message (
+  id text PRIMARY KEY,
   text text,
-  suggestion_id integer REFERENCES suggestion,
-  author_id integer REFERENCES "user"
+  createdAt integer,
+  author_id integer REFERENCES "user",
+  suggestion_id integer REFERENCES suggestion
 );
 
-GRANT SELECT, INSERT, UPDATE, DELETE on "user", suggestion, comment TO coolcity;
+GRANT SELECT, INSERT, UPDATE, DELETE on "user", suggestion, message TO coolcity;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO coolcity;

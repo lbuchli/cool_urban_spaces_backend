@@ -3,16 +3,15 @@ from typing import List, Optional, Union
 from pydantic import BaseModel
 
 class UserBase(BaseModel):
+    name: str
     class Config:
         orm_mode = True
 
 class UserCreate(UserBase):
-    name: str
     password: str
 
 class User(UserBase):
     id: int
-    name: str
 
 class SuggestionBase(BaseModel):
     title: str
@@ -43,3 +42,21 @@ class CommentCreate(CommentBase):
 class Comment(CommentBase):
     id: str
     author_id: Union[int, None]
+
+
+class MessageBase(BaseModel):
+    text: str
+    createdAt: int
+
+    class Config:
+        orm_mode = True
+
+
+class Message(MessageBase):
+    id: str
+    author: User
+
+class MessageCreate(MessageBase):
+    author_id: int
+
+

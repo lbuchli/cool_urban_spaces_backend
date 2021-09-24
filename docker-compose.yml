@@ -3,13 +3,13 @@
 version: '3.8'
 
 services:
-  web:
+  backend:
     env_file:
       - .env
-    command: bash -c 'while [ !</dev/tcp/db/5432 ] && [ `ping -c 1 factory` ]; do sleep 1; done; sleep 5; uvicorn cool_urban_spaces_backend.main:app --host 0.0.0.0'
     build: .
     networks:
       - db_network
+      - api_connection
     links:
       - db:database
     ports:
@@ -17,39 +17,39 @@ services:
       - 80:80
     depends_on:
       - db
-      - factory
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=$${DB_USER}
+      - POSTGRES_DB=$${DB_NAME}
+      - POSTGRES_PASSWORD=$${DB_PASSWORD}
     restart: on-failure
-    volumes:
-      - ./static/:/srv/static
 
   db:
-    networks:
-      - db_network
     env_file:
       - .env
+    networks:
+      - db_network
     build: postgres_db/.
     ports:
     - 5437:5432
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_DB=${DB_NAME}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-  factory:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data/
+  frontend:
+    build: ../coolUrbanSpaces/.
+    ports:
+      - 5000:80
     networks:
-      - db_network
-    build: frontend_factory/.
-    volumes:
-    - ./static/:/home/developer/coolUrbanSpaces/build/web/
+      - api_connection
 
 volumes:
   postgres_data:
 
 networks:
   db_network:
+    driver: bridge
+  api_connection:
     driver: bridge
